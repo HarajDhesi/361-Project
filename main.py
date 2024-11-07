@@ -1,4 +1,8 @@
+import imdb
+
 def main():
+
+    ia = imdb.Cinemagoer()
 
     # Intialize list datastructure
     movies_list = []
@@ -23,19 +27,45 @@ def main():
         # user_input = int(input("\n[1/2/3/4]: "))
 
         if user_input == 1:
-            print("Adding a movie ...")
-            correct_details = "N"
-            while correct_details != "Y":
-                movieName = input("Enter the name of the movie > ")
-                directorName = input("Enter the name of the director > ")
-                releaseYear = input("Enter the year the movie was released > ")
-                movieGenre = input("Enter the movie genre > ")
-                print("\n")
+            print("Adding a movie ...\n")
+
+            adding_method = int(input("Would you like to add the movie manually (1) or by the IMDb id (2) ? 1/2?: "))
+
+            if adding_method == 1:
+                correct_details = "N"
+                while correct_details != "Y":
+                    movieName = input("Enter the name of the movie > ")
+                    directorName = input("Enter the name of the director > ")
+                    releaseYear = input("Enter the year the movie was released > ")
+                    movieGenre = input("Enter the movie genre > ")
+                    print("\n")
+                    print(f"Movie Name: {movieName}, Directors: {directorName}, Release Year: {releaseYear}, Genre: {movieGenre}")
+                    correct_details = input("Are the movie details correct? (Y/N): ")
+
+                movies_list.append([movieName, directorName, releaseYear, movieGenre])
+                print(f"{movieName} has successfully been added to your catalog!")
+
+            elif adding_method == 2:
+                imdb_id = input("Please enter the IMDb movie id: ")
+                movie = ia.get_movie(imdb_id)
+                movieName = movie['title']
+                # directorName = ""
+                # for item in movie['directors']:
+                #     directorName += " " + str(item)
+                directors = movie['directors']
+                directorName = ", ".join(director['name'] for director in directors)
+                releaseYear = movie['year']
+                genreList = movie['genres']
+                movieGenre = ", ".join(genreList)
+                print('\n')
                 print(f"Movie Name: {movieName}, Directors: {directorName}, Release Year: {releaseYear}, Genre: {movieGenre}")
                 correct_details = input("Are the movie details correct? (Y/N): ")
 
-            movies_list.append([movieName, directorName, releaseYear, movieGenre])
-            print(f"{movieName} has successfully been added to your catalog!")
+                if correct_details == "Y":
+                    movies_list.append([movieName, directorName, releaseYear, movieGenre])
+                    print(f"{movieName} has successfully been added to your catalog!")
+                elif correct_details == "N":
+                    print("Please try adding the movie manually")
 
         elif user_input == 2:
             print("Looking up a movie ...\n")
@@ -47,7 +77,6 @@ def main():
                     if movie_lookup_name in movie:
                         print("\n")
                         print(f"Movie Name: {movie[0]}, Directors: {movie[1]}, Release Year: {movie[2]}, Genre: {movie[3]}")
-                        print(movie)
 
                         # implement deleting logic here
                         print("\nCOMMANDS:")
@@ -75,7 +104,7 @@ def main():
             else:
                 # need to change so only the movie title is displayed
                 for i in range(len(movies_list)):
-                    print(f"{i+1}.{movies_list[i][0]}")
+                    print(f"{i+1}. {movies_list[i][0]}")
 
                     # print(f"{i+1}. Movie Name: {movies_list[i][0]}, Directors: {movies_list[i][1]}, Release Year: {movies_list[i][2]}, Genre: {movies_list[i][3]}")
 
@@ -88,29 +117,29 @@ def main():
                 if display_user_request == 1:
                     print("Looking up a movie ...\n")
                     lookup_name = input("Enter the movie title you want to lookup: ")
-                for movie in movies_list:
-                    if lookup_name in movie:
-                        print("\n")
-                        print(f"Movie Name: {movie[0]}, Directors: {movie[1]}, Release Year: {movie[2]}, Genre: {movie[3]}")
+                    for movie in movies_list:
+                        if lookup_name in movie:
+                            print("\n")
+                            print(f"Movie Name: {movie[0]}, Directors: {movie[1]}, Release Year: {movie[2]}, Genre: {movie[3]}")
 
-                        # implement deleting logic here
-                        print("\nCOMMANDS:")
-                        print("1) Type '1' to delete a movie")
-                        print("2) Type '2' to return back to the home page")
-                        delete_request = int(input("\nSelect command: "))
+                            # implement deleting logic here
+                            print("\nCOMMANDS:")
+                            print("1) Type '1' to delete a movie")
+                            print("2) Type '2' to return back to the home page")
+                            delete_request = int(input("\nSelect command: "))
 
-                        if delete_request == 1:
-                            print(f"Are you sure you want to delete {movie[0]} from your catalog?")
-                            print("NOTE: Be aware that by confirming this deletion request, the movie will be permenately deleted from your collection and will need to be readded.")
-                            confirmed_delete_request = input("Please confirm. (Y/N): ")
+                            if delete_request == 1:
+                                print(f"Are you sure you want to delete {movie[0]} from your catalog?")
+                                print("NOTE: Be aware that by confirming this deletion request, the movie will be permenately deleted from your collection and will need to be readded.")
+                                confirmed_delete_request = input("Please confirm. (Y/N): ")
 
-                            if confirmed_delete_request == "Y":
-                                movies_list.remove(movie)
-                                print("You have successfully removed this movie from your catalog.")
+                                if confirmed_delete_request == "Y":
+                                    movies_list.remove(movie)
+                                    print("You have successfully removed this movie from your catalog.")
 
-                            else:
-                                print("You have aborted the deletion request.")
-            
+                                else:
+                                    print("You have aborted the deletion request.")
+                
             # for registered_movie in movies_list:
             #     print(f"Moive Name: {registered_movie[0]}, Directors: {registered_movie[1]}, Release Year: {registered_movie[2]}, Genre: {registered_movie[3]}")
 
@@ -127,23 +156,11 @@ def main():
     print("Thank you for using MovieHub! Goodbye!\n")
 
 
-
-
-        
-
-
-
     # Idea:
     # On the start of the app, give user the commands to View Catalog or Exit
     # when viewing catalog, it will display all movies or display a helpful promt that tells how to add a movie
         # command options will be
         # 1) Add a movie, 2) View a movie 3) Return to home 4) Quit
-
-    # Viewing a book
-    # provide the option to remove the book
-
-
-
 
 
 if __name__ == "__main__":
